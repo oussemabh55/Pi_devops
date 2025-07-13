@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+       SONAR_TOKEN = credentials('jenkins-token')
+     }
+
     tools {
         jdk 'JDK 17'
         maven 'Maven'
@@ -22,7 +26,20 @@ pipeline {
                 sh 'mvn test'
             }
         }
-    }
+
+        stage('SonarQube Analysis') {
+                    steps {
+                        script {
+                            withSonarQubeEnv('SonarQubeServer') {
+
+                                sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
+                            }
+                        }
+                    }
+                }
+
+
+
 
     post {
         success {
