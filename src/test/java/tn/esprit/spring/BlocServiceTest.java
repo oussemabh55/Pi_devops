@@ -8,11 +8,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 public class BlocServiceTest {
 
     @BeforeAll
-    void bedore() {
+     void bedore() {
 
     }
 

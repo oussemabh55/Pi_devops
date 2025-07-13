@@ -1,21 +1,35 @@
 pipeline {
-  agent any
+    agent any
 
-  stages {
-    stage('Clone') {
-      steps {
-        git 'https://github.com/oussemabh55/Pi_devops.git'
-      }
+    tools {
+        jdk 'JDK17'
+        maven 'Maven'
     }
 
-    stage('Build dans conteneur Maven') {
-      steps {
-        script {
-          docker.image('maven:3.9.6-eclipse-temurin-17').inside {
-            sh 'mvn clean'
-          }
+    stages {
+        stage('Clean') {
+            steps {
+                sh 'mvn clean'
+            }
         }
-      }
+        stage('Compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
     }
-  }
+
+    post {
+        success {
+            echo ' Build terminé avec succès !'
+        }
+        failure {
+            echo 'Échec du pipeline.'
+        }
+    }
 }
