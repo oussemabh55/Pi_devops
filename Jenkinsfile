@@ -34,6 +34,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('SonarQubeServer') {
+                        sh 'mvn jacoco:report'
                         sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
                     }
                 }
