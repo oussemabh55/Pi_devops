@@ -34,17 +34,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    try {
-                        withSonarQubeEnv('SonarQubeServer') {
-
-                            sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
-                        }
-                    } catch (Exception e) {
-                        echo " SonarQube est indisponible, étape ignorée."
+                    withSonarQubeEnv('SonarQubeServer') {
+                        sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
                     }
                 }
             }
         }
+
 
 
     }
