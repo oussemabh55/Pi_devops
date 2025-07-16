@@ -47,7 +47,7 @@ pipeline {
             }
         stage('Deploy to Nexus') {
             steps {
-                configFileProvider([configFile(fileId: '8ed318fb-bfa6-4f6c-bb07-90b46f622502', variable: 'MAVEN_SETTINGS')]) {
+                configFileProvider([configFile(fileId: '25d03788-e469-4627-b668-ebc57dcdcdcf', variable: 'MAVEN_SETTINGS')]) {
                     withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                         sh 'mvn deploy -s $MAVEN_SETTINGS'
                     }
