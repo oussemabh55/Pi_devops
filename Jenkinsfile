@@ -36,7 +36,7 @@ pipeline {
                     script {
                             try {
                                 withSonarQubeEnv('SonarQubeServer') {
-
+                                    sh 'mvn jacoco:report'
                                     sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
                                 }
                             } catch (Exception e) {
@@ -45,15 +45,7 @@ pipeline {
                         }
                     }
             }
-        stage('Deploy to Nexus') {
-            steps {
-                configFileProvider([configFile(fileId: '25d03788-e469-4627-b668-ebc57dcdcdcf', variable: 'MAVEN_SETTINGS')]) {
-                    withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
-                        sh 'mvn deploy -s $MAVEN_SETTINGS'
-                    }
-                }
-            }
-        }
+
 
 
     }
