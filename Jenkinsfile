@@ -33,13 +33,28 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                script {
-                    withSonarQubeEnv('SonarQubeServer') {
-                        sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
+                    script {
+                            try {
+                                withSonarQubeEnv('SonarQubeServer') {
+
+                                    sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
+                                }
+                            } catch (Exception e) {
+                                echo " SonarQube est indisponible, étape ignorée."
+                            }
+                        }
+                    }
+            }
+        stage('Deploy to Nexus') {
+            steps {
+                configFileProvider([configFile(fileId: '8ed318fb-bfa6-4f6c-bb07-90b46f622502', variable: 'MAVEN_SETTINGS')]) {
+                    withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                        sh 'mvn deploy -s $MAVEN_SETTINGS'
                     }
                 }
             }
         }
+
 
     }
 
