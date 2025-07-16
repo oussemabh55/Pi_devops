@@ -4,6 +4,7 @@ pipeline {
     environment {
         SONARQUBE_SCANNER_HOME = tool 'sonar-scanner'
         SONAR_TOKEN = credentials('sonar-token')
+        NEXUS_CREDS = credentials('nexus-creds')
     }
 
     tools {
@@ -40,6 +41,20 @@ pipeline {
                 }
             }
         }
+
+
+        stage('Deploy to Nexus') {
+            steps {
+                configFileProvider([configFile(fileId: '8ed318fb-bfa6-4f6c-bb07-90b46f622502', variable: 'MAVEN_SETTINGS')]) {
+                    sh """
+                        mvn deploy -s $MAVEN_SETTINGS \
+                        -Dnexus.username=${NEXUS_CREDS_USR} \
+                        -Dnexus.password=${NEXUS_CREDS_PSW}
+                    """
+                }
+            }
+        }
+
     }
 
     post {
