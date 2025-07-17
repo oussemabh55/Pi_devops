@@ -45,6 +45,14 @@ pipeline {
                         }
                     }
             }
+        stage('Create Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("foyer-app:${BUILD_NUMBER}")
+                }
+            }
+        }
+
 
 
 
