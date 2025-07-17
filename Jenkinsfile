@@ -1,7 +1,12 @@
 pipeline {
-    agent any
-
+     agent {
+            docker {
+                image 'docker:latest'             // Utilise l'image officielle Docker client
+                args '-v /var/run/docker.sock:/var/run/docker.sock' // Montre le socket Docker (optionnel ici)
+            }
+        }
     environment {
+        DOCKER_HOST = 'tcp://docker-cli-helper:2375'
         SONARQUBE_SCANNER_HOME = tool 'sonar-scanner'
         SONAR_TOKEN = credentials('sonar-token')
         NEXUS_CREDS = credentials('nexus-creds')
@@ -63,14 +68,12 @@ pipeline {
                                      }
                                 }
           }
-        stage('Create Docker Image') {
-            steps {
+        steps {
                 script {
-                    sh 'docker -H tcp://docker-cli-helper:2375 build -t foyer-app:1.0 .'
-
+                    sh 'docker version'  // Vérifie la connexion Docker
+                    sh 'docker build -t foyer-app:1.0 .'  // Build de l'image
                 }
             }
-        }
 
 
 
