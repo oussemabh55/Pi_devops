@@ -66,7 +66,8 @@ pipeline {
         stage('Create Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t foyer-app:1.0 .'
+                    sh 'docker -H tcp://docker-cli-helper:2375 build -t foyer-app:1.0 .'
+
                 }
             }
         }
