@@ -1,13 +1,8 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:latest'             // Utilise l'image officielle Docker client
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Monte le socket Docker
-        }
-    }
+    agent any
 
     environment {
-        DOCKER_HOST = 'tcp://docker-cli-helper:2375'
+        DOCKER_HOST = 'tcp://docker-cli-helper:2375'  // Permet au client Docker de se connecter au démon DIND
         SONARQUBE_SCANNER_HOME = tool 'sonar-scanner'
         SONAR_TOKEN = credentials('sonar-token')
         NEXUS_CREDS = credentials('nexus-creds')
@@ -70,11 +65,12 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {  // <== Stage manquant
+        stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker version'               // Vérifie la connexion Docker
-                    sh 'docker build -t foyer-app:1.0 .'  // Build de l'image Docker
+                    // Test si le démon Docker est accessible
+                    sh 'docker version'
+                    sh 'docker build -t foyer-app:1.0 .'
                 }
             }
         }
@@ -82,10 +78,10 @@ pipeline {
 
     post {
         success {
-            echo 'Build terminé avec succès !'
+            echo '✅ Build terminé avec succès !'
         }
         failure {
-            echo 'Échec du pipeline.'
+            echo '❌ Échec du pipeline.'
         }
     }
 }
