@@ -68,8 +68,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Test si le démon Docker est accessible
-                    sh 'docker version'
+                    sh 'docker version || echo "Docker non disponible"'
                     sh 'docker build -t foyer-app:1.0 .'
                 }
             }
