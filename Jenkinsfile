@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HOST = 'tcp://docker-cli-helper:2375'  // Permet au client Docker de se connecter au démon DIND
+        DOCKER_HOST = 'tcp://docker-cli-helper:2375'  // Pour utiliser Docker dans Jenkins
         SONARQUBE_SCANNER_HOME = tool 'sonar-scanner'
         SONAR_TOKEN = credentials('sonar-token')
         NEXUS_CREDS = credentials('nexus-creds')
@@ -70,6 +70,23 @@ pipeline {
                 script {
                     sh 'docker version || echo "Docker non disponible"'
                     sh 'docker build -t foyer-app:1.0 .'
+                }
+            }
+        }
+
+        // ✅ Étape 8 : Push vers DockerHub
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        // 🔄 Changer "oussemabh" par ton vrai DockerHub username
+                        def imageName = "$DOCKER_USER/foyer-app:1.0"
+
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        sh "docker tag foyer-app:1.0 ${imageName}"
+                        sh "docker push ${imageName}"
+                        sh "docker logout"
+                    }
                 }
             }
         }
