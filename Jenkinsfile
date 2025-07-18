@@ -90,6 +90,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Generate Test Report') {
+            steps {
+                sh 'mvn surefire-report:report-only'
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'target/site',
+                    reportFiles: 'surefire-report.html',
+                    reportName: "Test Report"
+                ])
+            }
+        }
+
     }
     post {
         always {
