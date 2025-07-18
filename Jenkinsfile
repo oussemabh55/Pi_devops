@@ -79,7 +79,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
-                        // 🔄 Changer "oussemabh" par ton vrai DockerHub username
+
                         def imageName = "$DOCKER_USER/foyer-app:1.0"
 
                         sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
@@ -91,7 +91,6 @@ pipeline {
             }
         }
     }
-
     post {
         success {
             echo '✅ Build terminé avec succès !'
