@@ -92,6 +92,9 @@ pipeline {
         }
     }
     post {
+        always {
+                junit '**/target/surefire-reports/*.xml'
+        }
         success {
             echo '✅ Build terminé avec succès !'
         }
