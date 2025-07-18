@@ -102,8 +102,6 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
-
-
         stage('Generate Test Report') {
             steps {
                 sh 'mvn surefire-report:report-only'
