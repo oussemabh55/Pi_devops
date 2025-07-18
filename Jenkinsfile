@@ -14,6 +14,12 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                 git 'https://github.com/oussemabh55/Pi_devops.git'
+             }
+        }
+
         stage('Clean') {
             steps {
                 sh 'mvn clean'
@@ -90,6 +96,13 @@ pipeline {
                 }
             }
         }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+
 
         stage('Generate Test Report') {
             steps {
