@@ -14,11 +14,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                 git 'https://github.com/oussemabh55/Pi_devops.git'
-             }
-        }
 
         stage('Clean') {
             steps {
@@ -80,7 +75,7 @@ pipeline {
             }
         }
 
-        // ✅ Étape 8 : Push vers DockerHub
+
         stage('Push to DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
